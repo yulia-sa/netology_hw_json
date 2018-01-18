@@ -17,7 +17,7 @@ def get_filelist():
 
 
 def encode_data():
-    with open(PATH_TO_FILES_DIR + file_name, 'rb') as f:
+    with open(PATH_TO_FILES_DIR + file, 'rb') as f:
         data = f.read()
         result = chardet.detect(data)
         encoded_text = data.decode(result['encoding'])
@@ -59,7 +59,7 @@ def print_popular_words():
 
     item = 0
     print('*** ТОР ' + str(TOP_NUMBER) + ' слов' + ' длиннее ' + str(WORDS_MIN_LENGTH - 1) +
-          ' символов' + ' для файла ' + file_name + ' ***')
+          ' символов' + ' для файла ' + file + ' ***')
     for popular_word in words_list_sorted:
         if item > (TOP_NUMBER - 1):
             break
@@ -68,5 +68,5 @@ def print_popular_words():
     print("=" * 20)
 
 
-for file_name in get_filelist():
+for file in get_filelist():
     print_popular_words()
