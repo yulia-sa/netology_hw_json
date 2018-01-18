@@ -24,14 +24,49 @@ def encode_data():
     return encoded_text
 
 
-def parse_json():
+def get_news_text_only():
+    news_text_list = []
     country_news = encode_data()
     country_news_parsed_json = json.loads(country_news) 
     for item in country_news_parsed_json['rss']['channel']['items']:
-        # print(item['description'])
+        news_text_list.append(item['description'])
+        news_text_list.append(item['title'])
+    return news_text_list
+
+
+def convert_text_to_words_dict():
+    news_text_list = get_news_text_only()
+    news_text_string = ''.join(news_text_list)
+
+    words_list = news_text_string.lower().strip().split(sep=" ")
+    words_dict_with_counter = {}
+    for word in words_list:
+        if len(word) >= WORDS_MIN_LENGTH:
+            word_count = news_text_string.count(word) 
+            words_dict_with_counter[word] = word_count
+    return words_dict_with_counter
+
+
+def sort_words():
+    words_dict_with_counter = convert_text_to_words_dict()
+
+    words_list_sorted = sorted(words_dict_with_counter.items(), key=lambda x: x[1], reverse=True)
+    return words_list_sorted
+
+
+def print_popular_words():
+    words_list_sorted = sort_words()
+
+    item = 0
+    print('*** ТОР ' + str(TOP_NUMBER) + ' слов' + ' длиннее ' + str(WORDS_MIN_LENGTH - 1) +
+          ' символов' + ' для файла ' + file_name + ' ***')
+    for popular_word in words_list_sorted:
+        if item > (TOP_NUMBER - 1):
+            break
+        item += 1
+        print(popular_word[0] + " — " + str(popular_word[1]))
+    print("=" * 20)
 
 
 for file_name in get_filelist():
-    test()
-    # get_news_description_only()
-    # print_popular_words()
+    print_popular_words()
